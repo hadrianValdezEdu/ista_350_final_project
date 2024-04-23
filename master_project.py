@@ -71,10 +71,10 @@ def make_plot_simple_trend_line(df, x, y, title, xlabel, ylabel, x_inch, y_inch)
 
     plt.scatter(x, y, color = colors)
     plt.title(title)
-    plt.xlabel(xlabel, fontsize=8)
-    plt.ylabel(ylabel, fontsize=8)
-    plt.xticks(rotation=45, ha="right", fontsize=8)
-    plt.yticks(np.linspace(min(y), max(y), 12))
+    plt.xlabel(xlabel, fontsize=16)
+    plt.ylabel(ylabel, fontsize=16)
+    plt.xticks(rotation=45, ha="right", fontsize=12)
+    plt.yticks(np.linspace(min(y), max(y), 12),fontsize=12)
 
     plt.grid(axis="y", color="gray", linewidth=0.5)
     plt.grid(axis="x", color="gray", linewidth=0.5)
@@ -98,21 +98,20 @@ def make_plot_simple_trend_line(df, x, y, title, xlabel, ylabel, x_inch, y_inch)
     x_range = np.linspace(0, len(x), len(x))  # Create array of x values to fit to the plot correctly
     plt.plot(x_range, intercept + slope * x_range, 'r', label='fitted line')  # Use 'x_range' instead of 'x_trend' to limit the line
 
-
 def make_plot_simple(x, y, title, xlabel, ylabel, x_inch, y_inch):
     fig = plt.figure(figsize=(x_inch, y_inch))
     fig.patch.set_facecolor("#D5E8F3")
 
     colors = ["#ff42a0", "#0000a5"] * (len(x) // 2)
     if len(x) % 2:
-        colors.append("#ff42a0")
+        colors.append("red")
 
     plt.scatter(x, y, color = colors)
     plt.title(title)
-    plt.xlabel(xlabel, fontsize=8)
-    plt.ylabel(ylabel, fontsize=8)
-    plt.xticks(rotation=45, ha="right", fontsize=8)
-    plt.yticks(np.linspace(min(y), max(y), 12))
+    plt.xlabel(xlabel, fontsize=16)
+    plt.ylabel(ylabel, fontsize=16)
+    plt.xticks(rotation=45, ha="right", fontsize=12)
+    plt.yticks(np.linspace(min(y), max(y), 12), fontsize=12)
 
     plt.grid(axis="y", color="gray", linewidth=0.5)
     plt.grid(axis="x", color="gray", linewidth=0.5)
@@ -120,14 +119,16 @@ def make_plot_simple(x, y, title, xlabel, ylabel, x_inch, y_inch):
 
     for color, label in zip(colors, plt.gca().get_xticklabels()):
         label.set_color(color)
+        
+    #plt.subplots_adjust(bottom=0.5)
 
-def make_plot_complex(x, y1, y2, y3, y4, y5, title, xlabel, ylabel):
+def make_plot_complex(x, y1, y2, y3, y4, y5, title, xlabel, ylabel, x_inch, y_inch):
     y_min = [y1.min(), y2.min(), y3.min(), y4.min(), y5.min()]
     y_max = [y1.max(), y2.max(), y3.max(), y4.max(), y5.max()]
     y_min = min(y_min)
     y_max = max(y_max)
 
-    fig = plt.figure(figsize=(8,16))
+    fig = plt.figure(figsize=(x_inch,y_inch))
     fig.patch.set_facecolor("#D5E8F3")
 
     colors = ["red", "blue", "green", "orange", "black"] 
@@ -138,10 +139,10 @@ def make_plot_complex(x, y1, y2, y3, y4, y5, title, xlabel, ylabel):
         plt.scatter(x, y, color=color, label=label)
 
     plt.title(title)
-    plt.xlabel(xlabel, fontsize=8)
-    plt.ylabel(ylabel, fontsize=8)
-    plt.xticks(rotation=45, ha="right", fontsize=8)
-    plt.yticks(np.linspace(y_min, y_max, 12))
+    plt.xlabel(xlabel, fontsize=16)
+    plt.ylabel(ylabel, fontsize=16)
+    plt.xticks(rotation=45, ha="right", fontsize=12)
+    plt.yticks(np.linspace(y_min, y_max, 12), fontsize=12)
 
     plt.grid(axis="y", color="gray", linewidth=0.5)
     plt.grid(axis="x", color="gray", linewidth=0.5)
@@ -155,8 +156,6 @@ def make_plot_complex(x, y1, y2, y3, y4, y5, title, xlabel, ylabel):
 
     # Add a legend
     plt.legend(["2023", "2022", "2021", "2020", "2019"])
-
-    #plt.subplots_adjust(bottom=0.5)
 
 def combine_national_state_df(df_one, df_two):
     combined_df = pd.DataFrame()
@@ -317,6 +316,7 @@ def main():
 
     master_df.loc[7, "occupation_title"] = "Nursing Aides"
 
+    # national yearly employment, Employment nums vs Occupation
     make_plot_complex(
         x=master_df["occupation_title"][:18],
         y1=master_df["2023_employment"][:18],
@@ -326,8 +326,11 @@ def main():
         y5=master_df["2019_employment"][:18],
         title="national yearly employment".title(),
         xlabel="Occupations",
-        ylabel="Employment")
+        ylabel="Employment",
+        x_inch=8,
+        y_inch=8)
 
+    # arizona Yearly employment
     make_plot_complex(
         x=arizona_state_master_df["occupation_title"][:18],
         y1=arizona_state_master_df["2023_employment"][:18],
@@ -337,7 +340,9 @@ def main():
         y5=arizona_state_master_df["2019_employment"][:18],
         title="Arizona yearly employment".title(),
         xlabel="Occupations",
-        ylabel="Employment")
+        ylabel="Employment",
+        x_inch=8,
+        y_inch=8)
 
     make_plot_simple(
         x=arizona_state_master_df["occupation_title"][:12*4],
@@ -348,6 +353,15 @@ def main():
         x_inch = 12,
         y_inch = 8)
 
+    make_plot_simple(
+        x=arizona_state_master_df["occupation_title"][:12],
+        y=arizona_state_master_df["2023_mean_hourly_wage"][:12],
+        title="arizona occupation and mean hourly wage".title(),
+        xlabel="occupation",
+        ylabel="2023 mean hourly wage",
+        x_inch = 6,
+        y_inch = 8)
+
     make_plot_simple_trend_line(
     df = arizona_state_master_df.dropna()[:18],
     x = arizona_state_master_df["occupation_title"][:18],
@@ -356,8 +370,7 @@ def main():
     xlabel= "occupation",
     ylabel= "Salary ($ USD)",
     x_inch = 8,
-    y_inch = 6
-    )
+    y_inch = 6)
 
     plt.show()
 
